@@ -35,6 +35,7 @@ apt-get install -y software-properties-common
 add-apt-repository ppa:ubuntu-toolchain-r/test && apt-get -y update
 apt-get -y install gcc-4.9 && apt-get upgrade -y libstdc++6
 apt install $PULSAR_PKG_DIR/apache-pulsar-client*.deb
+apt install -y libunwind-dev
 
 ./pulsar-test-service-start.sh
 npm install && npm run lint && npm run dtslint && npm run build && npm run test

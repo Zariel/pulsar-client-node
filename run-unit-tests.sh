@@ -36,12 +36,20 @@ done;
 apt-get -y update
 apt-get install -y software-properties-common
 add-apt-repository ppa:ubuntu-toolchain-r/test && apt-get -y update
-apt-get -y install gcc-4.9 && apt-get upgrade -y libstdc++6
+apt-get -y install gcc && apt-get upgrade -y libstdc++6
 apt install $PULSAR_PKG_DIR/apache-pulsar-client*.deb
 apt install -y libunwind-dev
+apt install -y valgrind
+
+curl -L https://www.dropbox.com/s/eio94kaz1h83wo9/node.tar.gz?dl=1 -o ./node.tar.gz
+tar xvf ./node.tar.gz
+PATH="$(pwd):$PATH"
+export PATH
+node -v
+which node
 
 ./pulsar-test-service-start.sh
-npm install --debug && npm run lint && npm run dtslint && npm run build:debug && npm run test
+npm install --debug && npm run lint && npm run dtslint && npm run build:debug && valgrind ./node ./node_modules/.bin/jest --verbose
 RES=$?
 ./pulsar-test-service-stop.sh
 

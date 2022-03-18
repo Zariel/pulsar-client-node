@@ -86,12 +86,12 @@ void Consumer::SetListenerCallback(MessageListenerCallback *listener) {
   if (listener) {
     // Pass consumer as argument
     listener->consumer = this;
-  }
 
-  if (this->listener == nullptr) {
-    // Maintain reference to consumer, so it won't get garbage collected
-    // since, when we have a listener, we don't have to maintain reference to consumer (in js code)
-    this->Ref();
+    if (this->listener == nullptr) {
+      // Maintain reference to consumer, so it won't get garbage collected
+      // since, when we have a listener, we don't have to maintain reference to consumer (in js code)
+      this->Ref();
+    }
   }
 
   this->listener = listener;
@@ -459,5 +459,7 @@ Napi::Value Consumer::Unsubscribe(const Napi::CallbackInfo &info) {
 Consumer::~Consumer() {
   if (this->listener != nullptr) {
     this->CleanupListener();
+  }
+  while (this->Unref() != 0) {
   }
 }

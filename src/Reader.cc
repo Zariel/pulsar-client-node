@@ -257,4 +257,6 @@ Reader::~Reader() {
   if (this->listener) {
     this->CleanupListener();
   }
+  while (this->Unref() != 0) {
+  }
 }

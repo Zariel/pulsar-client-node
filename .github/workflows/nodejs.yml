@@ -17,7 +17,7 @@
 # under the License.
 #
 name: Node.js
-on: [pull_request]
+on: [pull_request,workflow_dispatch]
 jobs:
   build:
     name: Build
@@ -26,6 +26,22 @@ jobs:
       - name: Check out code into the Node.js module directory
         uses: actions/checkout@v2
 
+      - name: Create crash directory
+        run: sudo mkdir -p /var/crash && echo 'dir is mounted' | tee /var/crash/mounted
+
+      - name: Update kernel core pattern
+        run: echo '/var/crash/core.%e.%p' | sudo tee /proc/sys/kernel/core_pattern
+
       - name: Test
+        continue-on-error: true
         run: |
+          ulimit -c unlimited
           ./docker-tests.sh
+
+      - name: Make core files readable
+        run: sudo chmod -R +rwx /var/crash/
+
+      - uses: actions/upload-artifact@master # capture all crashes as build artifacts
+        with:
+          name: crashes
+          path: /var/crash

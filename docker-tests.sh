@@ -30,7 +30,7 @@ echo "---- Testing Pulsar node client using image $IMAGE"
 
 docker pull $IMAGE
 
-DOCKER_CMD="docker run -i -v $ROOT_DIR:/pulsar-client-node $IMAGE"
+DOCKER_CMD="docker run -i -v $ROOT_DIR:/pulsar-client-node --ulimit core=-1 --privileged --mount type=bind,source=/var/crash,target=/var/crash $IMAGE"
 
 # Start Pulsar standalone instance
 # and execute the tests

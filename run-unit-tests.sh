@@ -20,6 +20,9 @@
 
 set -e
 
+cat /var/crash/mounted
+cp "$(which node)" /var/crash/
+
 ROOT_DIR=$(git rev-parse --show-toplevel)
 cd $ROOT_DIR
 
@@ -38,7 +41,7 @@ apt install $PULSAR_PKG_DIR/apache-pulsar-client*.deb
 apt install -y libunwind-dev
 
 ./pulsar-test-service-start.sh
-npm install && npm run lint && npm run dtslint && npm run build && npm run test
+npm install --debug && npm run lint && npm run dtslint && npm run build:debug && npm run test
 RES=$?
 ./pulsar-test-service-stop.sh
 
